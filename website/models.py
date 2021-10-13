@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     # Backref allows Post.User(), passive_deletes must be there for cascade to work
 
     comments = db.relationship("Comment", backref = 'user', passive_deletes = True)
+    likes = db.relationship("Like", backref = 'user', passive_deletes = True)
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -25,6 +26,7 @@ class Post(db.Model):
     # When user is deleted, all of the posts the user has get deleted
 
     comments = db.relationship("Comment", backref = 'post', passive_deletes = True)
+    likes = db.relationship("Like", backref = 'post', passive_deletes = True)
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -32,3 +34,9 @@ class Comment(db.Model):
     date_created = db.Column(db.DateTime(timezone = True), default = func.now()) 
     author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete = "CASCADE"), nullable = False) 
     post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete = "CASCADE"), nullable = False) 
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete = "CASCADE"), nullable = False) 
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete = "CASCADE"), nullable = False)
+    date_created = db.Column(db.DateTime(timezone = True), default = func.now())  
